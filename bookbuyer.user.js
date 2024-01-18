@@ -2,7 +2,7 @@
 // @name            BookBuyer
 // @author          JonDerThan
 // @namespace       JonDerThan.github.com
-// @version         1.0.1
+// @version         1.0.2
 // @description     Allows for quick searching of goodread books on an arbitrary website.
 // @match           https://www.goodreads.com/*
 // @iconURL         https://raw.githubusercontent.com/JonDerThan/bookbuyer/main/src/bookbuyer-favicon.png
