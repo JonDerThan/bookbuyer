@@ -1,0 +1,38 @@
+{
+  "name": "bookbuyer",
+  "version": "1.0.1",
+  "description": "Allows for quick searching of goodread books on an arbitrary website.",
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "jszip": "^3.10.1",
+    "web-ext": "^7.9.0"
+  },
+  "scripts": {
+    "test": "npx eslint . && npx web-ext lint -s src/",
+    "build": "node build.mjs",
+    "interactive-test": "npm run test && npx web-ext run",
+    "android-test": "npm run test && npx web-ext run -t firefox-android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonDerThan/bookbuyer"
+  },
+  "author": "JonDerThan",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/JonDerThan/bookbuyer/issues"
+  },
+  "homepage": "https://github.com/JonDerThan/bookbuyer",
+  "webExt": {
+    "sourceDir": "src/",
+    "ignoreFiles": [
+      "manifest_v3.json"
+    ],
+    "run": {
+      "startUrl": [
+        "https://www.goodreads.com/list/show/1.Best_Books_Ever"
+      ],
+      "firefoxApk": "org.mozilla.fenix"
+    }
+  }
+}

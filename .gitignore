@@ -1,0 +1,5 @@
+build/
+./options.*
+node_modules
+*~
+web-ext-config.js

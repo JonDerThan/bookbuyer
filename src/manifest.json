@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+
+  "name":         "BookBuyer",
+  "author":       "JonDerThan",
+  "version":      "1.0.1",
+  "description":  "Allows for quick searching of goodread books on an arbitrary website.",
+  "homepage_url": "https://github.com/JonDerThan/bookbuyer",
+
+  "icons": {
+    "16": "bookbuyer-favicon.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://www.goodreads.com/*"],
+      "js":      ["bookbuyer.js"]
+    }
+  ],
+
+  "web_accessible_resources": [
+    "options.html",
+    "bookbuyer-favicon.png"
+  ],
+
+  "options_ui": {
+    "page": "options.html"
+  },
+
+  "permissions": [ "storage" ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "bookbuyer@JonDerThan.github.com"
+    }
+  }
+}

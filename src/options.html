@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="options.js" defer></script>
+    <style>
+    body {
+      margin: 1em;
+    }
+
+    h4 {
+      margin-bottom: .3em;
+    }
+
+    form {
+      margin-top: 3em;
+    }
+
+    #saved {
+      visibility: hidden;
+      position: fixed;
+      bottom: 0px;
+      right: 0px;
+      margin: 1em;
+      border: 1px solid;
+      padding: 0.7em;
+      font-weight: bold;
+    }
+    </style>
+  </head>
+
+  <body>
+    To configure the search please do the following:
+    <ol>
+      <li>Head to your preferred site (e.g. amazon.com) in another tab.</li>
+      <li>Use the sites search feature to search for the following: SEARCH</li>
+      <li>
+        Copy the full URL and paste it into the field below. The URL should
+        look something like this:
+        "https://www.amazon.com/s?k=SEARCH&browser=chrome&ref=nav_bar".
+      </li>
+      <li>
+        The fields "Search site" and "Search parameter" should then be filled
+        out automatically! Click on "Save" below to save your changes.
+      </li>
+    </ol>
+    <label>
+      <b>Configure site</b>
+      <input id="configureSite" type="text" />
+    </label>
+    <form>
+      <label>
+        <b>Search site</b>
+        <input
+          id="searchSite"
+          type="text"
+          name="search_site"
+        />
+      </label>
+      <br />
+      <label>
+        <b>Search parameter</b>
+        <input
+          id="searchParam"
+          type="text"
+          name="search_param"
+        />
+      </label>
+      <br />
+      <label>
+        Language
+        <input type="text" name="lang" placeholder="en, de, ..." />
+      </label>
+      <br />
+      <label>
+        Include author
+        <input type="checkbox" name="incl_author" />
+      </label>
+      <br />
+      <label>
+        Sort by
+        <select name="sort">
+          <option value=""></option>
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="largest">Largest</option>
+          <option value="smallest">Smallest</option>
+        </select>
+      </label>
+      <br />
+
+      <div>
+        <h4>Content choice</h4>
+        <label>
+          <input type="checkbox" name="content" value="book_nonfiction" />
+          Book (non-fiction)
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="content" value="book_fiction" />
+          Book (fiction)
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="content" value="book_unknown" />
+          Book (unknown)
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="content" value="journal_article" />
+          Journal article
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="content" value="book_comic" />
+          Comic book
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="content" value="magazine" />
+          Magazine
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="content" value="standards_document" />
+          Standards document
+        </label>
+      </div>
+
+      <div>
+        <h4>Filetype</h4>
+        
+        <label>
+          <input type="checkbox" name="ext" value="pdf" />
+          pdf
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="epub" />
+          epub
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="cbr" />
+          cbr
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="mobi" />
+          mobi
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="fb2" />
+          fb2
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="cbz" />
+          cbz
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="azw3" />
+          azw3
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="djvu" />
+          djvu
+        </label>
+        <br />
+        <label>
+          <input type="checkbox" name="ext" value="fb2.zip" />
+          fb2.zip
+        </label>
+      </div>
+      <br />
+
+      <button type="submit" style="font-size: 1.2em; font-weight: bold;">
+        Save
+      </button>
+    </form>
+
+    <div id="saved">
+      Settings saved!
+    </div>
+  </body>
+</html>
+
