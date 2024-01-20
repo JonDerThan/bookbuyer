@@ -3,8 +3,8 @@
 Add-on that displays links on goodread pages, which link to searches on an
 arbitrary, configurable website.
 
-This can either be installed as an add-on on [Firefox](TODO)
-and [Chrome](TODO)
+This can either be installed as an add-on on [Firefox](https://addons.mozilla.org/en-US/firefox/addon/bookbuyer/)
+and [Chrome](https://chromewebstore.google.com/detail/bookbuyer/ecgniefnmkclifnmohjhkbkkblgpinan)
 or as a [userscript](https://raw.githubusercontent.com/JonDerThan/bookbuyer/main/bookbuyer.user.js).
 
 ## Settings
