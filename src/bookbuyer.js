@@ -35,7 +35,7 @@ let pendingChecks = [-1, -1, -1, -1]
 
 // Check whether the script is currently executed as an add-on.
 function isAddon() {
-  return typeof chrome !== "undefined"
+  return typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined"
 }
 
 // Run as an add-on.
