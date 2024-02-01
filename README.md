@@ -23,5 +23,5 @@ three dots beside this add-on. Then click `Options`.
 To configure the search site and the search settings you have to modify the
 script a little bit. Head to your userscript manager's dashboard, edit this
 script, and modify the variables `SEARCH_SITE`, `SEARCH_PARAM`, `inclAuthor`,
-and `searchParams `. See the comments for more infos.
+and `searchParams`. See the comments for more infos.
 
