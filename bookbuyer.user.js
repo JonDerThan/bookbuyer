@@ -2,7 +2,7 @@
 // @name            BookBuyer
 // @author          JonDerThan
 // @namespace       JonDerThan.github.com
-// @version         1.0.2
+// @version         1.0.3
 // @description     Allows for quick searching of goodread books on an arbitrary website.
 // @match           https://www.goodreads.com/*
 // @iconURL         https://raw.githubusercontent.com/JonDerThan/bookbuyer/main/src/bookbuyer-favicon.png
@@ -35,7 +35,7 @@ let pendingChecks = [-1, -1, -1, -1]
 
 // Check whether the script is currently executed as an add-on.
 function isAddon() {
-  return typeof chrome !== "undefined"
+  return typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined"
 }
 
 // Run as an add-on.
