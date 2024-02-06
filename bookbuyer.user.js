@@ -2,7 +2,7 @@
 // @name            BookBuyer
 // @author          JonDerThan
 // @namespace       JonDerThan.github.com
-// @version         1.0.3
+// @version         1.1.0
 // @description     Allows for quick searching of goodread books on an arbitrary website.
 // @match           https://www.goodreads.com/*
 // @iconURL         https://raw.githubusercontent.com/JonDerThan/bookbuyer/main/src/bookbuyer-favicon.png
@@ -11,14 +11,28 @@
 // ==/UserScript==
 "use strict"
 
+// ---------- CONFIGURATION START ---------------------------------------------
+
 // Use any site that offers a search feature and search for `SEARCH`.
 // Consider the example site https://www.amazon.com/s?k=SEARCH&browser=chrome&ref=nav_bar.
 // The `SEARCH_SITE` variable is everything left to the `?`. With this example,
 // this would be `https://www.amazon.com/s`. The `SEARCH_PARAM` variable is
 // found before the `SEARCH`, in the example this would just be `k`.
-let SEARCH_SITE = ""
+let SEARCH_SITE  = ""
 let SEARCH_PARAM = ""
+
+// Whether to use the favicon of the search site as link images.
+let USE_SEARCH_SITE_FAVICON = false
+// Whether to use the DuckDuckGo image proxy for the favicons.
+let USE_DDG_PROXY_FAV = false
+// Whether to include the author's name in the search.
 let inclAuthor = false
+
+// You can include search parameters of your search site. If your configured
+// search site offers a filter for content choice for example, you'll notice
+// that this filter will get added to the URL if you enable it, e.g.
+// `content=book_fiction` will be part of the url. You can add this filter to
+// the add-on, similar to the examples below.
 let searchParams = [
   // ["sort",    "newest"],
   // ["lang",    "en"],
@@ -29,6 +43,9 @@ let searchParams = [
   // ["ext",     "pdf"],
 ]
 
+// ---------- CONFIGURATION END -----------------------------------------------
+
+const DDG_IMG_PROXY = "https://external-content.duckduckgo.com/iu/?u="
 let ICON_URL = "https://raw.githubusercontent.com/JonDerThan/bookbuyer/main/src/bookbuyer-favicon.png"
 let SEARCH_HOSTNAME = ""
 let pendingChecks = [-1, -1, -1, -1]
@@ -53,29 +70,7 @@ if (isAddon()) {
   // only the callback API is supported.
   chrome.storage.sync.get("settings")
     .then(data => {
-      if (Object.prototype.hasOwnProperty.call(data, "settings")) {
-        const settings = data.settings
-        inclAuthor = settings.findIndex(s => s[0] == "incl_author") != -1
-        SEARCH_SITE = settings.find(s => s[0] === "search_site")
-        if (SEARCH_SITE) SEARCH_SITE = SEARCH_SITE[1]
-        SEARCH_PARAM = settings.find(s => s[0] === "search_param")
-        if (SEARCH_PARAM) SEARCH_PARAM = SEARCH_PARAM[1]
-        searchParams = settings.filter(s => 
-          s[0] != "incl_author"
-            && s[0] !== "search_site"
-            && s[0] !== "search_param"
-            && s[0] != "lang"
-            && s[1]
-        )
-        const lang = settings.find(s => s[0] == "lang")
-        if (lang) searchParams.push(...lang[1]
-          .split(",")
-          .map(l => l.trim())
-          .filter(l => l)
-          .map(l => [ "lang", l ])
-        )
-      }
-
+      parseSettings(data)
       main()
     })
     .catch(e => {
@@ -89,6 +84,40 @@ else {
   main()
 }
 
+function parseSettings(data) {
+  if (!Object.prototype.hasOwnProperty.call(data, "settings")) return
+  const settings = data.settings
+
+  // Parse the add-on settings.
+  inclAuthor = settings.findIndex(s => s[0] === "incl_author") != -1
+  USE_SEARCH_SITE_FAVICON = settings
+    .findIndex(s => s[0] === "use_search_site_fav") != -1
+  USE_DDG_PROXY_FAV = settings
+    .findIndex(s => s[0] === "use_ddg_proxy_fav") != -1
+  SEARCH_SITE = settings.find(s => s[0] === "search_site")
+  if (SEARCH_SITE) SEARCH_SITE = SEARCH_SITE[1]
+  SEARCH_PARAM = settings.find(s => s[0] === "search_param")
+  if (SEARCH_PARAM) SEARCH_PARAM = SEARCH_PARAM[1]
+
+  // Parse the site parameters.
+  searchParams = settings.filter(s =>
+    s[0] !== "incl_author"
+      && s[0] !== "use_search_site_fav"
+      && s[0] !== "use_ddg_proxy_fav"
+      && s[0] !== "search_site"
+      && s[0] !== "search_param"
+      && s[0] !== "lang"          // the lang field is parsed below
+      && s[1]
+  )
+  const lang = settings.find(s => s[0] == "lang")
+  if (lang) searchParams.push(...lang[1]
+    .split(",")
+    .map(l => l.trim())
+    .filter(l => l)
+    .map(l => [ "lang", l ])
+  )
+}
+
 function getURL(search, author) {
   let httpGetList = searchParams
     .map(s => encodeURIComponent(s[0]) + "=" + encodeURIComponent(s[1]))
@@ -97,6 +126,23 @@ function getURL(search, author) {
   if (inclAuthor && author) search += " " + author
   httpGetList += SEARCH_PARAM + "=" + encodeURIComponent(search)
   return `${SEARCH_SITE}?${httpGetList}`
+}
+
+function getIconURL() {
+  if (!USE_SEARCH_SITE_FAVICON)
+    return ICON_URL
+
+  try {
+    let url = new URL(SEARCH_SITE)
+    url = url.origin + "/favicon.ico"
+    if (USE_DDG_PROXY_FAV)
+      url = DDG_IMG_PROXY + encodeURIComponent(url)
+    return url
+  }
+  catch (e) {
+    console.error(e)
+    return ICON_URL
+  }
 }
 
 function findBookElems() {
@@ -168,10 +214,11 @@ function getTitle(elem) {
 function createLink(title, author) {
   // create img
   let img = document.createElement("img")
-  img.setAttribute("src", ICON_URL)
+  img.setAttribute("src", getIconURL())
   let alt = `Search for "${title}" on ${SEARCH_HOSTNAME}`
   img.setAttribute("alt",   alt)
   img.setAttribute("title", alt)
+  img.style = "height: 1.2em;"
 
   // create a
   const url = getURL(title, author)
@@ -209,9 +256,8 @@ async function main() {
     alert("The BookBuyer add-on can only work if the search site is configured!")
     if (isAddon())
       window.open(chrome.runtime.getURL("options.html"))
-    // TODO: write text and link to correct site
     else
-      window.open("https://github.com/JonDerThan/bookbuyer")
+      window.open("https://github.com/JonDerThan/bookbuyer#userscript-users")
     return
   }
 
