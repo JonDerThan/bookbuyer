@@ -1,18 +1,26 @@
-const saved = document.getElementById("saved")
-let timeout = -1
+const savedElem = document.getElementById("saved")
+let   timeoutId = -1
+/**
+ * Indicate to the user that the settings were saved by making a specific HTML
+ * element visible for 1s.
+ */
 function showSaved() {
-  saved.style.setProperty("visibility", "visible")
-  clearTimeout(timeout)
-  timeout = setTimeout(
-    () => saved.style.setProperty("visibility", "hidden"),
-    1000,
-  )
+  function makeVisible(vis) {
+    savedElem.style.setProperty("visibility", vis ? "visible" : "hidden")
+  }
+  makeVisible(true)
+  clearTimeout(timeoutId)
+  timeoutId = setTimeout(() => makeVisible(false), 1000)
 }
 
-const searchSite    = document.getElementById("searchSite")
-const searchParam   = document.getElementById("searchParam")
-const configureSite = document.getElementById("configureSite")
-configureSite.addEventListener("input", () => {
+const configureSiteElem = document.getElementById("configureSite")
+const searchSiteElem    = document.getElementById("searchSite")
+const searchParamElem   = document.getElementById("searchParam")
+/**
+ * When the user inputs a site, extract the search URL and parameter and input
+ * them in the respective HTML elements.
+ */
+configureSiteElem.addEventListener("input", () => {
   // Given a set of search params, search for a specific value and return its
   // key.
   function find(searchParams, searchValue) {
@@ -24,17 +32,11 @@ configureSite.addEventListener("input", () => {
   }
 
   try {
-    let url = new URL(configureSite.value)
-    searchSite.value = url.origin + url.pathname
-    searchParam.value = find(url.searchParams, "SEARCH")
+    let url = new URL(configureSiteElem.value)
+    searchSiteElem.value  = url.origin + url.pathname
+    searchParamElem.value = find(url.searchParams, "SEARCH")
   } catch (e) { return }
 })
-
-function formData2Obj(formData) {
-  let settings = []
-  formData.forEach((value, key) => settings.push([key, value]))
-  return { settings }
-}
 
 function applyData2Form(data) {
   if (!Object.prototype.hasOwnProperty.call(data, "settings")) return
@@ -53,10 +55,20 @@ function applyData2Form(data) {
   })
 }
 
+/** Given an iterator, collect the entries into an array. */
+function collectIterator(iter) {
+  let list = []
+  for (const x of iter) {
+    list.push(x)
+  }
+  return list
+}
+
 function saveOptions(e) {
   e.preventDefault()
   const formData = new FormData(e.target)
-  chrome.storage.sync.set(formData2Obj(formData))
+  const settings = collectIterator(formData.entries())
+  chrome.storage.sync.set({ settings })
   showSaved()
 }
 
