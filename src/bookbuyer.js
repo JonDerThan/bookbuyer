@@ -45,6 +45,7 @@ let searchParams = [
 
 // ---------- CONFIGURATION END -----------------------------------------------
 
+const DDG_IMG_PROXY = "https://external-content.duckduckgo.com/iu/?u="
 let ICON_URL = "https://raw.githubusercontent.com/JonDerThan/bookbuyer/main/src/bookbuyer-favicon.png"
 let SEARCH_HOSTNAME = ""
 let pendingChecks = [-1, -1, -1, -1]
@@ -89,6 +90,10 @@ function parseSettings(data) {
 
   // Parse the add-on settings.
   inclAuthor = settings.findIndex(s => s[0] === "incl_author") != -1
+  USE_SEARCH_SITE_FAVICON = settings
+    .findIndex(s => s[0] === "use_search_site_fav") != -1
+  USE_DDG_PROXY_FAV = settings
+    .findIndex(s => s[0] === "use_ddg_proxy_fav") != -1
   SEARCH_SITE = settings.find(s => s[0] === "search_site")
   if (SEARCH_SITE) SEARCH_SITE = SEARCH_SITE[1]
   SEARCH_PARAM = settings.find(s => s[0] === "search_param")
@@ -97,6 +102,8 @@ function parseSettings(data) {
   // Parse the site parameters.
   searchParams = settings.filter(s =>
     s[0] !== "incl_author"
+      && s[0] !== "use_search_site_fav"
+      && s[0] !== "use_ddg_proxy_fav"
       && s[0] !== "search_site"
       && s[0] !== "search_param"
       && s[0] !== "lang"          // the lang field is parsed below
@@ -119,6 +126,23 @@ function getURL(search, author) {
   if (inclAuthor && author) search += " " + author
   httpGetList += SEARCH_PARAM + "=" + encodeURIComponent(search)
   return `${SEARCH_SITE}?${httpGetList}`
+}
+
+function getIconURL() {
+  if (!USE_SEARCH_SITE_FAVICON)
+    return ICON_URL
+
+  try {
+    let url = new URL(SEARCH_SITE)
+    url = url.origin + "/favicon.ico"
+    if (USE_DDG_PROXY_FAV)
+      url = DDG_IMG_PROXY + encodeURIComponent(url)
+    return url
+  }
+  catch (e) {
+    console.error(e)
+    return ICON_URL
+  }
 }
 
 function findBookElems() {
@@ -190,10 +214,11 @@ function getTitle(elem) {
 function createLink(title, author) {
   // create img
   let img = document.createElement("img")
-  img.setAttribute("src", ICON_URL)
+  img.setAttribute("src", getIconURL())
   let alt = `Search for "${title}" on ${SEARCH_HOSTNAME}`
   img.setAttribute("alt",   alt)
   img.setAttribute("title", alt)
+  img.style = "height: 1.2em;"
 
   // create a
   const url = getURL(title, author)
