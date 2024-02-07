@@ -11,6 +11,12 @@
     "16": "bookbuyer-favicon.png"
   },
 
+  "action": {
+    "default_icon": "bookbuyer-favicon.png",
+    "default_title": "BookBuyer",
+    "default_popup": "options.html"
+  },
+
   "content_scripts": [
     {
       "matches": ["https://www.goodreads.com/*"],
