@@ -9,14 +9,8 @@ or as a [userscript](https://raw.githubusercontent.com/JonDerThan/bookbuyer/main
 
 ## Settings
 
-You can configure the search settings for the injected links!
-
-**Firefox:** Click the add-on icon in the top right corner and click
-`Manage Extension` on the add-on. Then click `Preferences`.
-
-**Chrome:** Click the add-on icon in the top right corner and click on the
-three dots beside this add-on. Then click `Options`.
-
+You can configure the settings for the search links! Just click this add-on's
+icon in the top right corner of your browser.
 
 ## Userscript users
 
