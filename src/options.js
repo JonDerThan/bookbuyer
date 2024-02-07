@@ -31,11 +31,20 @@ configureSiteElem.addEventListener("input", () => {
     return null
   }
 
+  function indicateValidity(valid) {
+    configureSiteElem.style.borderColor = valid ? "green" : "red"
+  }
+
   try {
     let url = new URL(configureSiteElem.value)
+    let param = find(url.searchParams, "SEARCH")
+    if (!param) throw Error("invalid site")
     searchSiteElem.value  = url.origin + url.pathname
-    searchParamElem.value = find(url.searchParams, "SEARCH")
-  } catch (e) { return }
+    searchParamElem.value = param
+    indicateValidity(true)
+  } catch (e) {
+    indicateValidity(false)
+  }
 })
 
 function applyData2Form(data) {

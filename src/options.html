@@ -5,16 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="options.js" defer></script>
     <style>
-    body {
-      margin: 1em;
+    :root {
+      color-scheme: light dark;
+      --bg1: white;
+      --bg2: #d9c8fe;
+      --text: black;
+      --primary: #b093fb;
     }
 
-    h4 {
-      margin-bottom: .3em;
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg1: #121212;
+        --bg2: #282828;
+        --text: white;
+        --primary: #a688fa;
+      }
+    }
+
+    body {
+      margin: 1em;
+      background-color: var(--bg1);
+      color: var(--text);
+    }
+
+    input {
+      background-color: var(--bg2);
+      border: none;
+      border-radius: .3em;
+    }
+
+    select {
+      background-color: var(--bg2);
+      border: none;
+      border-radius: .3em;
     }
 
     form {
       margin-top: 3em;
+      width: fit-content;
+      display: grid;
+      grid-template-columns: auto auto;
+      align-items: start;
+      grid-gap: .2em .2em;
+    }
+
+    form > input {
+      width: fit-content;
+    }
+
+    form > h3 {
+      grid-column: 1 / 3;
+      margin-bottom: .1em;
+    }
+
+    form h4 {
+      margin-top: .1em;
+      margin-bottom: 0;
+    }
+
+    #configureSite {
+      border-width: 2px;
+      border-style: solid;
+      border-color: red;
+    }
+
+    .submitButton {
+      font-size: 1.2em;
+      font-weight: bold;
+      grid-column: 1/3;
+      margin-top: 1em;
+      text-align: center;
+      background-color: var(--primary);
+      color: black;
+      border: none;
+      width: fit-content;
+      padding: .5em 3em;
+      border-radius: 1em;
     }
 
     #saved {
@@ -27,6 +93,10 @@
       padding: 0.7em;
       font-weight: bold;
     }
+
+    .mono {
+      font-family: monospace;
+    }
     </style>
   </head>
 
@@ -34,12 +104,15 @@
     To configure the search please do the following:
     <ol>
       <li>Head to your preferred site (e.g. amazon.com) in another tab.</li>
-      <li>Use the sites search feature to search for the following: SEARCH</li>
+      <li>
+        Use the sites search feature to search for the following:
+        <span class="mono" style="font-weight: 600;">SEARCH</span>
+      </li>
       <li>
         Copy the full URL and paste it into the "<em>Configure site</em>" field
         below. The URL should look something like this:
         <br />
-        "https://www.amazon.com/s?k=SEARCH&browser=chrome&ref=nav_bar".
+        "<span class="mono">https://www.amazon.com/s?k=SEARCH&browser=chrome&ref=nav_bar</span>".
       </li>
       <li>
         The fields "Search site" and "Search parameter" should then be filled
@@ -51,55 +124,59 @@
       <input id="configureSite" type="text" />
     </label>
     <form>
-      <label>
-        <b>Search site</b>
-        <input
-          id="searchSite"
-          type="text"
-          name="search_site"
-        />
+      <h3>Add-on settings</h3>
+
+      <label for="searchSite">
+        Search site
       </label>
-      <br />
-      <label>
-        <b>Search parameter</b>
-        <input
-          id="searchParam"
-          type="text"
-          name="search_param"
-        />
+      <input
+        id="searchSite"
+        type="text"
+        name="search_site"
+      />
+
+      <label for="searchParam">
+        Search parameter
       </label>
-      <br />
-      <label>
-        Language
-        <input type="text" name="lang" placeholder="en, de, ..." />
-      </label>
-      <br />
-      <label>
+      <input
+        id="searchParam"
+        type="text"
+        name="search_param"
+      />
+
+      <label for="inclAuthor">
         Include author
-        <input type="checkbox" name="incl_author" />
       </label>
-      <br />
-      <label>
+      <input id="inclAuthor" type="checkbox" name="incl_author" />
+
+      <label for="useSearchSiteFav">
         Use the search site's favicon
-        <input type="checkbox" name="use_search_site_fav" />
       </label>
-      <br />
-      <label>
+      <input id="useSearchSiteFav" type="checkbox" name="use_search_site_fav" />
+
+      <label for="useDdgProxyFav">
         Use DDG proxy for favicon
-        <input type="checkbox" name="use_ddg_proxy_fav" />
       </label>
-      <br />
-      <label>
+      <input id="useDdgProxyFav" type="checkbox" name="use_ddg_proxy_fav" />
+
+      <h3>Site settings</h3>
+
+      <label for="lang">
+        Language
+      </label>
+      <input id="lang" type="text" name="lang" placeholder="en, de, ..." />
+
+      <label for="sortSelect">
         Sort by
-        <select name="sort">
-          <option value=""></option>
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="largest">Largest</option>
-          <option value="smallest">Smallest</option>
-        </select>
       </label>
-      <br />
+      <select id="sortSelect" name="sort">
+        <option value=""></option>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="largest">Largest</option>
+        <option value="smallest">Smallest</option>
+      </select>
+
 
       <div>
         <h4>Content choice</h4>
@@ -187,9 +264,8 @@
           fb2.zip
         </label>
       </div>
-      <br />
 
-      <button type="submit" style="font-size: 1.2em; font-weight: bold;">
+      <button class="submitButton" type="submit">
         Save
       </button>
     </form>
