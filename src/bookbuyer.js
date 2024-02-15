@@ -26,7 +26,7 @@ let USE_SEARCH_SITE_FAVICON = false
 // Whether to use the DuckDuckGo image proxy for the favicons.
 let USE_DDG_PROXY_FAV = false
 // Whether to include the author's name in the search.
-let inclAuthor = false
+let INCL_AUTHOR = false
 
 // You can include search parameters of your search site. If your configured
 // search site offers a filter for content choice for example, you'll notice
@@ -45,43 +45,12 @@ let searchParams = [
 
 // ---------- CONFIGURATION END -----------------------------------------------
 
-const DDG_IMG_PROXY = "https://external-content.duckduckgo.com/iu/?u="
 let ICON_URL = "https://raw.githubusercontent.com/JonDerThan/bookbuyer/main/src/bookbuyer-favicon.png"
 let SEARCH_HOSTNAME = ""
-let pendingChecks = [-1, -1, -1, -1]
 
 // Check whether the script is currently executed as an add-on.
 function isAddon() {
   return typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined"
-}
-
-// Run as an add-on.
-if (isAddon()) {
-  ICON_URL = chrome.runtime.getURL("bookbuyer-favicon.png")
-  // FIXME: Despite documentation saying otherwise, apparently Firefox supports
-  // both the callback AND the promises API for the `chrome.storage.sync.get`
-  // API, when run with manifest v2. As per the docs, with v2, only the
-  // callback API should be supported. Since the Chrome version is run with v3
-  // anyways (where the promises API is adopted), this works in both Firefox
-  // and Chrome. Since the Firefox version should switch over to v3 soon, this
-  // undocumented version is kept. Remove this note when manifest v3 is used
-  // for the Firefox version too.
-  // Note: Seemingly this only applies to content scripts. In the settings page
-  // only the callback API is supported.
-  chrome.storage.sync.get("settings")
-    .then(data => {
-      parseSettings(data)
-      main()
-    })
-    .catch(e => {
-      console.error("error loading settings: " + e)
-      main()
-    })
-}
-
-// Run as a userscript.
-else {
-  main()
 }
 
 function parseSettings(data) {
@@ -89,7 +58,7 @@ function parseSettings(data) {
   const settings = data.settings
 
   // Parse the add-on settings.
-  inclAuthor = settings.findIndex(s => s[0] === "incl_author") != -1
+  INCL_AUTHOR = settings.findIndex(s => s[0] === "incl_author") != -1
   USE_SEARCH_SITE_FAVICON = settings
     .findIndex(s => s[0] === "use_search_site_fav") != -1
   USE_DDG_PROXY_FAV = settings
@@ -123,12 +92,14 @@ function getURL(search, author) {
     .map(s => encodeURIComponent(s[0]) + "=" + encodeURIComponent(s[1]))
     .join("&")
   if (httpGetList.length > 0) httpGetList += "&"
-  if (inclAuthor && author) search += " " + author
+  if (INCL_AUTHOR && author) search += " " + author
   httpGetList += SEARCH_PARAM + "=" + encodeURIComponent(search)
   return `${SEARCH_SITE}?${httpGetList}`
 }
 
 function getIconURL() {
+  const DDG_IMG_PROXY = "https://external-content.duckduckgo.com/iu/?u="
+
   if (!USE_SEARCH_SITE_FAVICON)
     return ICON_URL
 
@@ -231,6 +202,7 @@ function createLink(title, author) {
   return a
 }
 
+let pendingChecks = [-1, -1, -1, -1]
 function refreshPendingChecks(func) {
   // clear out remaining ones:
   pendingChecks.forEach(clearTimeout)
@@ -272,5 +244,34 @@ async function main() {
   })
 
   injectLinks()
+}
+
+// Run as an add-on.
+if (isAddon()) {
+  ICON_URL = chrome.runtime.getURL("bookbuyer-favicon.png")
+  // FIXME: Despite documentation saying otherwise, apparently Firefox supports
+  // both the callback AND the promises API for the `chrome.storage.sync.get`
+  // API, when run with manifest v2. As per the docs, with v2, only the
+  // callback API should be supported. Since the Chrome version is run with v3
+  // anyways (where the promises API is adopted), this works in both Firefox
+  // and Chrome. Since the Firefox version should switch over to v3 soon, this
+  // undocumented version is kept. Remove this note when manifest v3 is used
+  // for the Firefox version too.
+  // Note: Seemingly this only applies to content scripts. In the settings page
+  // only the callback API is supported.
+  chrome.storage.sync.get("settings")
+    .then(data => {
+      parseSettings(data)
+      main()
+    })
+    .catch(e => {
+      console.error("error loading settings: " + e)
+      main()
+    })
+}
+
+// Run as a userscript.
+else {
+  main()
 }
 
