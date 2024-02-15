@@ -1,6 +1,6 @@
 {
   "name": "bookbuyer",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Allows for quick searching of goodread books on an arbitrary website.",
   "devDependencies": {
     "eslint": "^8.34.0",

@@ -3,7 +3,7 @@
 
   "name":         "BookBuyer",
   "author":       "JonDerThan",
-  "version":      "1.2.0",
+  "version":      "1.2.1",
   "description":  "Allows for quick searching of goodread books on an arbitrary website.",
   "homepage_url": "https://github.com/JonDerThan/bookbuyer",
 
