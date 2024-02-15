@@ -92,7 +92,7 @@ function getURL(search, author) {
     .map(s => encodeURIComponent(s[0]) + "=" + encodeURIComponent(s[1]))
     .join("&")
   if (httpGetList.length > 0) httpGetList += "&"
-  if (INCL_AUTHOR && author) search += " " + author
+  if (INCL_AUTHOR && author) search += " " + fmtAuthor(author)
   httpGetList += SEARCH_PARAM + "=" + encodeURIComponent(search)
   return `${SEARCH_SITE}?${httpGetList}`
 }
@@ -180,6 +180,15 @@ function getTitle(elem) {
   const matches = elem.innerText.match(TITLE)
 
   return matches[1]
+}
+
+// Author's name may be in a format "LASTNAME, FIRSTNAME". This function always
+// returns "FIRSTNAME LASTNAME".
+function fmtAuthor(author) {
+  if (!author.includes(","))
+    return author
+
+  return author.split(",").reverse().join(" ").trim()
 }
 
 function createLink(title, author) {
