@@ -62,6 +62,36 @@ function applyData2Form(data) {
     else
       element.value = setting[1]
   })
+
+  if (isSiteConfigured(data)) indicateAlreadyConfigured()
+}
+
+/**
+ * If the user has already configured the search site, indicate that by
+ * removing the red border around the `Configure site` field and inserting a
+ * placeholder.
+ */
+function indicateAlreadyConfigured() {
+  configureSiteElem.style.borderColor = "#00000000" // transparent
+  configureSiteElem.placeholder       = "Already configured!"
+}
+
+/**
+ * Check if the `data` object has a correctly configured site.
+ */
+function isSiteConfigured(data) {
+  if (!Object.prototype.hasOwnProperty.call(data, "settings")) return false
+
+  let searchSite  = data.settings.find(setting => setting[0] === "search_site")
+  let searchParam = data.settings.find(setting => setting[0] === "search_param")
+  if (searchSite === undefined || searchParam === undefined) return false
+  searchSite  = searchSite[1]
+  searchParam = searchParam[1]
+  if (searchSite.length === 0 || searchParam.length === 0) return false
+
+  try       { new URL(`${searchSite}?${searchParam}=SEARCH`) }
+  catch (_) { return false }
+  return true
 }
 
 /** Given an iterator, collect the entries into an array. */
