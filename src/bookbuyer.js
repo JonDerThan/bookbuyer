@@ -92,7 +92,7 @@ function getURL(search, author) {
     .map(s => encodeURIComponent(s[0]) + "=" + encodeURIComponent(s[1]))
     .join("&")
   if (httpGetList.length > 0) httpGetList += "&"
-  if (INCL_AUTHOR && author) search += " " + fmtAuthor(author)
+  if (INCL_AUTHOR && author) search = fmtAuthor(author)
   httpGetList += SEARCH_PARAM + "=" + encodeURIComponent(search)
   return `${SEARCH_SITE}?${httpGetList}`
 }
